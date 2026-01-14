@@ -1,11 +1,9 @@
-#note, this could benefit from creating a hybrid worker setup so multiple ranks can work on one block and from GPU acceleration,as fenicsx supports it
-#also needs some clean up, there is no point passing parameters from the config file in, as most of the testing is done from the config file anyways
-
 from config import parser, config_args
 import numpy as np
 import os
 from mpi4py import MPI
 from utils.block_processor import *
+#note, this could benefit from creating a hybrid worker setup so multiple ranks can work on one block and from GPU acceleration,as fenicsx supports it
 
 # Create folders (only on rank 0)
 comm = MPI.COMM_WORLD
@@ -18,7 +16,6 @@ file_path = os.path.abspath(args.file_path)
 if rank == 0:
     os.makedirs(os.path.join(file_path, "xdmf"), exist_ok=True)
     os.makedirs(os.path.join(file_path, "xdmf_sol"), exist_ok=True)
-    os.makedirs(os.path.join(file_path, "solutions"), exist_ok=True)
     os.makedirs(os.path.join(file_path, "matrix_necessities"), exist_ok=True)
 comm.Barrier()  # make sure folders exist before other ranks proceed
 

@@ -6,7 +6,7 @@ import random
 
 args = parser.parse_args()
 flp = np.loadtxt('floorplan_AMD.txt') #load floorplan of each functional unit using numpy
-if flp.ndim == 1:
+if flp.ndim == 1: #ensures it works for a floorplan of 1 unit
     flp = flp[np.newaxis, :] 
 power_max = args.Pm 
 num_steps = args.num_steps

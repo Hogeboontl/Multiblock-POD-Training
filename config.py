@@ -44,7 +44,7 @@ config_args = {
     'training_config': {
         'x_dim': (10, 'number of hexahedral cells in x-axis'),
         'y_dim': (10, 'number of hexahedral cells in y-axis'),
-        'z_dim': (100, 'number of hexahedral cells in z-axis'),
+        'z_dim': (80, 'number of hexahedral cells in z-axis'),
         'h': (0.0002977976, 'height of the chip'),
         'num_steps': (300, 'number of time steps'),
         'tol': (1e-14, 'padding for float point comparisons'),
@@ -59,7 +59,7 @@ config_args = {
         'active_thickness':(0.0000557976, 'thickness of oxide layer'),
         'silicon_thickness':(0.0000557976, 'thickness of silicon layer'),
         'Ta':(0, 'ambient temperature'),
-        'Pm':(25, 'power max used for mesh training and trace generation'),
+        'Pm':(75, 'power max used for mesh training and trace generation'),
         'pg_change':(10, 'how many time steps before random power changes in training blocks'),
         'num_modes':(10, 'number of POD modes to use'),
         'file_path':("/home/hogebotl/data", "absolute file directory for all data created"),

@@ -16,7 +16,6 @@ class KappaExpression:
         self.tol = tol
 
     def eval(self, x):
-        """x: array of coordinates (N, 3)"""
         threshold = self.h - self.thick_Sio2
         vals = np.where(x[:, 2] <= threshold + self.tol, self.k_0, self.k_1)
         return vals
@@ -57,14 +56,13 @@ class SpecificHeatExpression:
 # Extended source / power density
 # -------------------------
 class ExtendedSourceExpression:
-    """Power density / extended source expression for FEniCSx."""
-
+    
     def __init__(self, flp, pd_row, center_index, mesh_tags, tag_volumes,
                  chip_thickness, active_thickness, power_max, tol, pg_change,step, seed=None):
         self.flp = flp
         self.pd_row = pd_row
         self.center_index = center_index
-        self.mesh_tags = mesh_tags  # dolfinx.mesh.MeshTags
+        self.mesh_tags = mesh_tags  
         self.tag_volumes = tag_volumes
         self.chip_thickness = chip_thickness
         self.active_thickness = active_thickness
