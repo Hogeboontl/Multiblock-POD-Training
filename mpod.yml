@@ -215,4 +215,3 @@ dependencies:
       - torchaudio==2.7.1+cu118
       - torchvision==0.22.1+cu118
       - triton==3.3.1
-prefix: /home/hogebotl/anaconda3/envs/mpod
