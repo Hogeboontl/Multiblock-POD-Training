@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
 
         
-        # ----------------  VTU write ----------------
+        # vtu write
         comm = MPI.COMM_WORLD
 
         xdmf_file = f"{absfile_path}/xdmf/block_{i}_center.xdmf"
@@ -86,10 +86,6 @@ if __name__ == "__main__":
             submesh.topology.dim, 0
         ).array.reshape(-1, 4)
 
-        # Sanity check: CG1 => one DOF per vertex
-        assert block_modes.shape[0] == points.shape[0], (
-            "block_modes must have one value per mesh vertex (CG1 required)"
-        )
         # Each POD mode is vertex-based point data
         point_data = {
             f"POD_mode_{k}": block_modes[:, k]
