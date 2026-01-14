@@ -33,11 +33,6 @@ for the POD modes, use:
 python3 get_pod_modes.py
 ```
 
-pd_gen.py can be used to generate a random powertrace for the unit within the floorplan and can be run using:
-```
-python3 pd_gen.py
- ```
-
  plot.py will provide a png of the eigvalues, which can be used to signify which POD modes will provide useful data. It can be run using:
  ```
  python3 plot.py
@@ -46,7 +41,8 @@ python3 pd_gen.py
 ## Configuration
 All configurable parameters are located in config.py under the config_args section. You can also override these values from the command line using:
 
-```mpirun -n 16 python3 get_training_data.py --<VARIABLE_NAME> <VALUE>
+```
+mpirun -n 16 python3 get_training_data.py --<VARIABLE_NAME> <VALUE>
 ```
 
 All optional arguments are documented in the config_args section of config.py.
