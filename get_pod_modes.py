@@ -40,8 +40,7 @@ if __name__ == "__main__":
         X = torch.tensor(np.stack(snapshots, axis=1), dtype=torch.float32, device=device)
         node_weights_t = torch.tensor(node_weights, dtype=torch.float32, device=device)
         # Get the transposed version and get dot product and then divide by num of snapshots
-
-        A = (X.T @ X) / time_steps #adjust for integration
+        A = (X.T @ X) / time_steps 
         
         # Solve for eigenvalue
         eigvals, eigvecs = torch.linalg.eigh(A)
