@@ -454,8 +454,8 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
 
         # Save center solution 
         V_sub = u_sub.function_space
-        coords_sub = V_sub.tabulate_dof_coordinates()
-        temp_vals_sub = u_sub.x.array[:]
+        coords_sub = submesh.geometry.x
+        temp_vals_sub = u_sub.x.array.copy() 
 
         with h5py.File(f"{file_path}/xdmf_sol/block_{i}_center_step_{step}.h5", "w") as h5file:
             h5file.create_dataset("temperature", data=temp_vals_sub)
