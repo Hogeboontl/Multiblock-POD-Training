@@ -61,7 +61,7 @@ config_args = {
         'Pm':(75, 'power max used for mesh training and trace generation (Watts)'),
         'pg_change':(10, 'how many time steps before random power changes in training blocks'),
         'num_modes':(10, 'number of POD modes to use'),
-        'file_path':("/home/hogebotl/data", "absolute file directory for all data created"),
+        'file_path':("/mnt/data", "absolute file directory for all data created"),
         'cuda': (-1, 'which cuda device to use (-1 for cpu training)'),
     }
 }
