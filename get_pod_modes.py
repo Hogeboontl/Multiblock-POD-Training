@@ -103,8 +103,6 @@ if __name__ == "__main__":
         )
 
         meshio.write(vtu_file, meshio_mesh)
-
-        # ---------------------------------------------------
             
     os.makedirs(os.path.join(absfile_path, "POD"), exist_ok=True)
     
