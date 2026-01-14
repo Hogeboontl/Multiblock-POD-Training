@@ -45,7 +45,7 @@ config_args = {
         'y_dim': (10, 'number of hexahedral cells in y-axis'),
         'z_dim': (80, 'number of hexahedral cells in z-axis'),
         'h': (0.0002977976, 'height of the chip'),
-        'num_steps': (100, 'number of time steps'),
+        'num_steps': (240, 'number of time steps'),
         'tol': (1e-14, 'padding for float point comparisons'),
         'sampling_interval':(4.347826086956521e-6, 'interval between steps'), 
         'h_c':(2.40598e4, 'heat transfer coefficient'),  

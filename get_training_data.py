@@ -56,7 +56,7 @@ if __name__ == "__main__":
     flp = np.loadtxt('floorplan_AMD.txt')
     if flp.ndim == 1:
         flp = flp[np.newaxis, :] 
-    pd = np.loadtxt('random_ptrace.txt')
+    pd = np.loadtxt('power_trace.txt')
     if pd.ndim == 1:  # only one block in the trace
         pd = pd[:, np.newaxis]  # shape becomes (num_steps, 1)
     if rank == 0: #compute power density, only needs to happen once
