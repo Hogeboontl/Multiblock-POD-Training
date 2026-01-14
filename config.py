@@ -39,17 +39,16 @@ def add_flags_from_config(parser, config_dict):
                 f"Could not add flag for param {param} because it was already present."
             )
     return parser
-#data that can be called from this file is present here: 
 config_args = {
     'training_config': {
         'x_dim': (10, 'number of hexahedral cells in x-axis'),
         'y_dim': (10, 'number of hexahedral cells in y-axis'),
         'z_dim': (80, 'number of hexahedral cells in z-axis'),
         'h': (0.0002977976, 'height of the chip'),
-        'num_steps': (300, 'number of time steps'),
+        'num_steps': (100, 'number of time steps'),
         'tol': (1e-14, 'padding for float point comparisons'),
-        'sampling_interval':(4.347826086956521e-6, 'the last time step'), 
-        'h_c':(2.40598e4, 'heat transfer coefficient'),  #2.40598e4
+        'sampling_interval':(4.347826086956521e-6, 'interval between steps'), 
+        'h_c':(2.40598e4, 'heat transfer coefficient'),  
         'k_0':(100, 'silicon thermal conductivity W/m·K'),
         'k_1':(1.2, 'oxide thermal conductivity W/m·K'),
         'rho_silicon':(2330, 'Density silicon (kg/m³)'),
@@ -59,12 +58,11 @@ config_args = {
         'active_thickness':(0.0000557976, 'thickness of oxide layer'),
         'silicon_thickness':(0.0000557976, 'thickness of silicon layer'),
         'Ta':(0, 'ambient temperature'),
-        'Pm':(75, 'power max used for mesh training and trace generation'),
+        'Pm':(75, 'power max used for mesh training and trace generation (Watts)'),
         'pg_change':(10, 'how many time steps before random power changes in training blocks'),
         'num_modes':(10, 'number of POD modes to use'),
         'file_path':("/home/hogebotl/data", "absolute file directory for all data created"),
         'cuda': (-1, 'which cuda device to use (-1 for cpu training)'),
-        'steps': (20, 'the number of steps to take to solve the ODE'),
     }
 }
 

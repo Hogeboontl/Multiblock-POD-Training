@@ -31,7 +31,7 @@ TAG_DONE = 13
 TAG_STOP = 14
 TAG_EXIT = 15
 
-if __name__ == "__main__": #only run the code if this is the file directly run
+if __name__ == "__main__": 
     # Parse args and load variables
     tol = args.tol
     k_0 = args.k_0

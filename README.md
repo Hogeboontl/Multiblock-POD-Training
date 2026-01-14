@@ -1,6 +1,6 @@
 # FEM Training and POD Mode Demo
 
-This repository provides a small demonstration of FEM (Finite Element Method) training and POD (Proper Orthogonal Decomposition) mode creation for a CPU chip. The goal is to enable the creation of a multi-block reduced-order model. **Note:** Due to limited manpower, the project was not developed beyond this point.
+This repository provides a foundational demonstration of FEM (Finite Element Method) simulations and the generation of POD (Proper Orthogonal Decomposition) modes for a CPU chip. The chip is divided into modular “blocks,” each of which can be independently trained. These blocks can then be mathematically combined to form a multi-block reduced-order model. In this setup, each block requires neighboring blocks to supply randomized power inputs, ensuring that the resulting POD modes accurately capture variations in boundary conditions. **Note:** Due to limited manpower, the project was not developed beyond this point and only contains Embarrassingly Parallel optimization for computing multiple blocks at once and is missing much optimization in regards to the overall FEM and POD calculations.
 
 ## Installation
 
@@ -32,6 +32,16 @@ for the POD modes, use:
 ```
 python3 get_pod_modes.py
 ```
+
+pd_gen.py can be used to generate a random powertrace for the unit within the floorplan and can be run using:
+```
+python3 pd_gen.py
+ ```
+
+ plot.py will provide a png of the eigvalues, which can be used to signify which POD modes will provide useful data. It can be run using:
+ ```
+ python3 plot.py
+ ```
 
 ## Configuration
 All configurable parameters are located in config.py under the config_args section. You can also override these values from the command line using:

@@ -9,7 +9,7 @@ from dolfinx.fem import Function, FunctionSpace
 from dolfinx.mesh import create_submesh
 import ufl
 from ufl import TrialFunction, TestFunction, sqrt, dot, grad, dx, ds, inner, FacetNormal,CellDiameter
-from .expressions import *  # DensityExpression, KappaExpression, SpecificHeatExpression, ExtendedSourceExpression
+from .expressions import *  
 from .generate_mesh import *
 from dolfinx.io import XDMFFile
 from config import parser, config_args
@@ -100,9 +100,7 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
     )
 
 
-    # -------------------------
     # Extract center submesh (region 5)
-    # -------------------------
     center_cells = np.where(mt.values == 5)[0].astype(np.int32)
     submesh, entity_map, vertex_map, geom_map = create_submesh(
         mesh_x, mesh_x.topology.dim, center_cells
@@ -118,9 +116,7 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
     with io.XDMFFile(comm, f"{file_path}/xdmf/block_{i}_center.xdmf", "w") as xdmf_file:
         xdmf_file.write_mesh(submesh)
 
-    # -------------------------
     # Compute nodal weights for POD
-    # -------------------------
     def tet_volume(v0, v1, v2, v3):
         return abs(np.dot((v1-v0), np.cross((v2-v0),(v3-v0)))) / 6
 
@@ -140,9 +136,7 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
 
     np.save(f"{file_path}/matrix_necessities/block_{i}_node_weights.npy", node_weights)
 
-    # -------------------------
     # Full mesh nodal properties
-    # -------------------------
     V = fem.FunctionSpace(mesh_x, ("Lagrange", 1))
     u_n = fem.Function(V)
     u_n.x.array[:] = float(Ta_val)
@@ -181,12 +175,6 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
     ds_product = fem.Function(V)
     ds_product.x.array[:] = density_vals_full * specific_heat_vals_full
     ds_product.x.scatter_forward()
-
-    # -------------------------
-    # Create output directories
-    # -------------------------
-    os.makedirs(f"{file_path}/solutions", exist_ok=True)
-    os.makedirs(f"{file_path}/xdmf_sol", exist_ok=True)
 
     # Trial/Test functions
     u_trial = TrialFunction(V)
@@ -259,21 +247,12 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
         u_n.x.array[:] = u.x.array
         u_n.x.scatter_forward()
             
-        # Extract center solution 
-        parent_coords = mesh_x.geometry.x
-        sub_coords = submesh.geometry.x
-
-        # Build mapping from submesh vertex → parent vertex
-        parent_vertex = vertex_map
-
-        u_sub.x.array[:] = u.x.array[parent_vertex]
+        u_sub.interpolate(u)  # automatically maps parent u to submesh DOFs
         u_sub.x.scatter_forward()
 
-        V_sub = u_sub.function_space
-
-        coords_sub = V_sub.tabulate_dof_coordinates()  
-        temp_vals_sub = u_sub.x.array.copy()          
-
+        # write submesh data
+        temp_vals_sub = u_sub.x.array.copy()
+        coords_sub = V_sub.tabulate_dof_coordinates()
         with h5py.File(f"{file_path}/xdmf_sol/block_{i}_center_step_{step}.h5", "w") as h5file:
             h5file.create_dataset("temperature", data=temp_vals_sub)
             h5file.create_dataset("mesh_coordinates", data=coords_sub)
@@ -281,9 +260,7 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
             h5file.create_dataset("cells", data=cells)
 
 
-        # ---------------------------------------------------------------
         # Save VTUs for animation in ParaView (for block 0 only)
-        # ---------------------------------------------------------------
         if i == 0:
 
             # Make output directory
@@ -293,27 +270,31 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
             # Save the current timestep VTU
             vtu_file = os.path.join(save_dir, f"block0_step_{step:04d}.vtu")
 
-            # Connectivity for meshio
-            cells = submesh.topology.connectivity(
-                submesh.topology.dim, 0
-            ).array.reshape(-1, 4)
+            tdim = submesh.topology.dim
+
+            cells = submesh.topology.connectivity(tdim, 0).array.reshape(-1, 4)
+            points = submesh.geometry.x
+
+            # DOF coordinates (CG1 → nodal)
+            dof_coords = V_sub.tabulate_dof_coordinates().reshape(-1, 3)
+
+            # Map DOFs to vertices
+            from scipy.spatial import cKDTree
+            tree = cKDTree(dof_coords)
+            _, dof_to_vertex = tree.query(points)
+
+            temperature_vertices = u_sub.x.array[dof_to_vertex]
 
             meshio_mesh = meshio.Mesh(
-                points=np.ascontiguousarray(submesh.geometry.x),
+                points=np.ascontiguousarray(points),
                 cells=[("tetra", cells)],
-                point_data={"temperature": u_sub.x.array.copy()}
+                point_data={"temperature": temperature_vertices}
             )
 
             meshio.write(vtu_file, meshio_mesh)
 
-            # Record for PVD writing later
-            if "saved_vtu_files" not in globals():
-                saved_vtu_files = []
-            saved_vtu_files.append((step, vtu_file))
 
-             # ---------------------------------------------------------------
-            # Also save FULL MESH VTUs 
-            # ---------------------------------------------------------------
+            #  save full mesh VTUs 
             full_save_dir = os.path.join(file_path, "paraview_timeseries_fullmesh_block0")
             os.makedirs(full_save_dir, exist_ok=True)
 
@@ -331,12 +312,8 @@ def process_block_x(i, flp, pd, args, T, h, k_0, rho_oxide, c_oxide,
             )
 
             meshio.write(full_vtu_file, full_meshio_mesh)
+            
 
-            # Record for full-mesh PVD writing later
-            if "saved_fullmesh_vtu_files" not in globals():
-                saved_fullmesh_vtu_files = []
-            saved_fullmesh_vtu_files.append((step, full_vtu_file))
-            #######################################
         if step % 10 == 0:
             print(f"Block {i}, Step {step}/{args.num_steps} completed")
 
